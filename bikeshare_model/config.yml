@@ -1,0 +1,135 @@
+# Data Files
+app_config_:
+  training_data_file: "bike-sharing-dataset.csv"
+  pipeline_save_file: "bikeshare_model_output_v"
+
+# Model Configuration
+model_config_:
+  target: cnt
+  pipeline_name: bikeshare_model
+
+  features:  
+    - season
+    - hr
+    - holiday
+    - weekday
+    - workingday
+    - weathersit
+    - temp
+    - atemp
+    - hum
+    - windspeed
+    - registered
+    - yr
+    - mnth
+
+
+
+  # Mapped feature names
+  hr_var: hr  
+  yr_var: yr  
+  mnth_var: mnth
+  season_var: season  
+  holiday_var: holiday  
+  workingday_var: workingday
+  weekday_var: weekday   
+  weathersit_var: weathersit  
+  dteday_var: "dteday"   
+  temp_var: 0.0  # ✅ Should be a float, default value added
+  atemp_var: 0.0  # ✅ Should be a float, default value added
+  hum_var: 0.0  # ✅ Should be a float, default value added
+  windspeed_var: 0.0  # ✅ Should be a float, default value added
+  casual_var: 0  # ✅ Should be an integer, default value added
+  registered_var: 0  # ✅ Should be an integer, default value added
+  
+  
+  # Unused fields
+  unused_fields:         
+    - casual
+    - registered
+
+
+  # Feature mappings
+  yr_mappings:
+    "2011": 0
+    "2012": 1
+
+  mnth_mappings:
+    "November": 10
+    "July": 6
+    "February": 1 
+    "March": 2
+    "June": 5 
+    "January": 0
+    "December": 11 
+    "May": 4
+    "September": 8 
+    "August": 7
+    "October": 9 
+    "April": 3
+
+  season_mappings:
+    "Spring": 2
+    "Summer": 0
+    "Fall": 1
+    "Winter": 3
+
+  weathersit_mappings:
+    "Clear": 1
+    "Mist": 0
+    "Light Rain": 2
+    "Heavy Rain": 3 
+
+  holiday_mappings:
+    "No": 0
+    "Yes": 1
+
+  workingday_mappings:
+    "No": 1
+    "Yes": 0
+
+  hr_mappings:
+    "6am": 5
+    "4am": 3
+    "11am": 10
+    "7am": 6
+    "12pm": 23
+    "9am": 8
+    "2am": 1
+    "4pm": 15
+    "8am": 7
+    "1am": 0
+    "3am": 2
+    "1pm": 12
+    "10pm": 21
+    "7pm": 18
+    "8pm": 19
+    "2pm": 13
+    "5pm": 16
+    "5am": 4
+    "3pm": 14
+    "9pm": 20
+    "10am": 9
+    "6pm": 17
+    "12am": 11
+    "11pm": 22
+
+  # Handle outliers
+  outliers:
+    - temp
+    - atemp
+    - hum
+    - windspeed
+
+  # Drop columns
+  drop_features:
+    - casual
+    - registered  
+
+  # Train/test split
+  test_size: 0.20
+  random_state: 42
+
+  # Algorithm parameters
+  n_estimators: 150
+  max_depth: 5
