@@ -54,6 +54,12 @@ model_config_:
     "2011": 0
     "2012": 1
 
+  season_mappings:
+    "Spring": 1
+    "Summer": 2
+    "Fall": 3
+    "Winter": 4
+
   mnth_mappings:
     "November": 10
     "July": 6
@@ -67,12 +73,6 @@ model_config_:
     "August": 7
     "October": 9 
     "April": 3
-
-  season_mappings:
-    "Spring": 2
-    "Summer": 0
-    "Fall": 1
-    "Winter": 3
 
   weathersit_mappings:
     "Clear": 1
