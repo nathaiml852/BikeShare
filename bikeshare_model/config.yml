@@ -132,4 +132,7 @@ model_config_:
 
   # Algorithm parameters
   n_estimators: 150
-  max_depth: 5
+  max_depth: 5  min_samples_split: 2
+  min_samples_leaf: 1
+  min_samples_split: 2
+  min_samples_leaf: 1

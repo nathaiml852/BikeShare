@@ -43,7 +43,7 @@ def make_prediction(*,input_data:Union[pd.DataFrame, dict]) -> dict:
 
 if __name__ == "__main__":
 
-    data_in={'dteday':["2012-11-05"],"season":["fall"],'hr':["6am"],'holiday':['No'],'weekday':["Mon"],'workingday':['Yes'],
+    data_in={'dteday':["2012-11-05"],'season':["fall"],'hr':["6am"],'holiday':['No'],'weekday':["Mon"],'workingday':['Yes'],
              'weathersit':['Mist'],'temp':[6.10],'atemp':[3.0014],'hum':[49.0],'windspeed':[19.0012],
                 'registered':[135],'casual':[4]}
     

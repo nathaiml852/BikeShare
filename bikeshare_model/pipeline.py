@@ -19,7 +19,7 @@ from bikeshare_model.processing.features import ColumnDropper
 if not isinstance(config.model_config_.yr_var, str):
     raise ValueError("config.model_config_.yr_var should be a string")
 
-bikeshare_pipe = Pipeline([
+bikeshare_pipe = Pipeline([[
     
     # **Imputation for categorical columns** (Before One-Hot Encoding)
     ('WeekdayModeImputer', WeekdayModeImputer(variables=config.model_config_.weekday_var)),
@@ -57,4 +57,4 @@ bikeshare_pipe = Pipeline([
                                         max_depth=config.model_config_.max_depth,
                                         random_state=config.model_config_.random_state))
 
-])
+]])
