@@ -20,6 +20,10 @@ def validate_inputs(*, input_df: pd.DataFrame) -> Tuple[pd.DataFrame, Optional[d
     """Check model inputs for unprocessable values."""
 
     pre_processed = pre_pipeline_preparation(data_frame=input_df)
+    
+    if "bteday" in pre_processed.columns:
+        pre_processed["bteday"] = pre_processed["bteday"].astype(str)
+    
     validated_data = pre_processed[config.model_config_.features].copy()
     errors = None
 
@@ -44,7 +48,7 @@ class DataInputSchema(BaseModel):
     atemp: Optional[float]
     hum: Optional[float]
     windspeed: Optional[float]  
-    casual: Optional[int]
+    #casual: Optional[int]
     registered: Optional[int]
     dteday: Optional[datetime]
 

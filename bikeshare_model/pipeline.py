@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 
 from bikeshare_model.config.core import config
-from bikeshare_model.processing.features import WeekdayModeImputer
+from bikeshare_model.processing.features import WeekdayImputer
 from bikeshare_model.processing.features import WeathersitImputer   
 from bikeshare_model.processing.features import Mapper
 from bikeshare_model.processing.features import OutlierHandler
@@ -19,12 +19,13 @@ from bikeshare_model.processing.features import ColumnDropper
 if not isinstance(config.model_config_.yr_var, str):
     raise ValueError("config.model_config_.yr_var should be a string")
 
-bikeshare_pipe = Pipeline([[
+bikeshare_pipe = Pipeline([
     
     # **Imputation for categorical columns** (Before One-Hot Encoding)
-    ('WeekdayModeImputer', WeekdayModeImputer(variables=config.model_config_.weekday_var)),
-    ('weathersit_imputation', WeathersitImputer(variables=config.model_config_.weathersit_var)),
-
+    ('WeekdayImputer', WeekdayImputer(col1=config.model_config_.weekday_var, col2=config.model_config_.dteday_var)),
+    ('WeathersitImputer', WeathersitImputer(variables=config.model_config_.weathersit_var)),
+    #('HolidayImputer', Mapper(str(config.model_config_.holiday_var), config.model_config_.holiday_mappings)),
+    #('WorkingdayImputer', Mapper(str(config.model_config_.workingday_var), config.model_config_.workingday_var)),
     # **One-Hot Encoding for 'weekday' column** (After Imputation)
     ('weekday_encoder', WeekdayOneHotEncoder(variable=config.model_config_.weekday_var)),
 
@@ -47,7 +48,7 @@ bikeshare_pipe = Pipeline([[
     ('outlier_handler', OutlierHandler(variables=['temp', 'atemp', 'hum', 'windspeed'])),
 
     # **Drop unnecessary columns**
-    ##('drop_columns', ColumnDropper(columns=['dteday'])),
+    ('drop_columns', ColumnDropper(columns=['dteday', 'casual'])),
 
     # **Scaling numerical features**
     ('scaler', StandardScaler()),
@@ -57,4 +58,4 @@ bikeshare_pipe = Pipeline([[
                                         max_depth=config.model_config_.max_depth,
                                         random_state=config.model_config_.random_state))
 
-]])
+])

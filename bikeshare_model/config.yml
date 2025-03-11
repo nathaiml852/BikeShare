@@ -22,6 +22,8 @@ model_config_:
     - registered
     - yr
     - mnth
+    - dteday
+
 
 
 
@@ -46,7 +48,9 @@ model_config_:
   # Unused fields
   unused_fields:         
     - casual
-    - registered
+
+  drop_features:
+    - casual
 
 
   # Feature mappings
@@ -121,10 +125,6 @@ model_config_:
     - hum
     - windspeed
 
-  # Drop columns
-  drop_features:
-    - casual
-    - registered  
 
   # Train/test split
   test_size: 0.20
@@ -132,7 +132,4 @@ model_config_:
 
   # Algorithm parameters
   n_estimators: 150
-  max_depth: 5  min_samples_split: 2
-  min_samples_leaf: 1
-  min_samples_split: 2
-  min_samples_leaf: 1
+  max_depth: 5  

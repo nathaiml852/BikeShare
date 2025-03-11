@@ -9,33 +9,35 @@ from typing import Union
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
 
-class WeekdayModeImputer(BaseEstimator, TransformerMixin):
-    """Impute missing values in 'weekday' column using the mode."""
+class WeekdayImputer(BaseEstimator, TransformerMixin):
+    """Impute missing values in 'weekday' column using the 'dteday' column."""
 
-    def __init__(self, variables: str):
-        if not isinstance(variables, str):
-            raise ValueError("variables should be a str")
-        self.variables = variables
-        
-    def fit(self, X: pd.DataFrame, y: pd.Series = None):
-        # we need the fit statement to accomodate the sklearn pipeline
-         self.fill_value=X[self.variables].mode()[0]
-         return self
+    def __init__(self, col1='weekday', col2='dteday'):
+        self.col1 = col1
+        self.col2 = col2
+
+    def fit(self, X, y=None):  
+        """Fit method (required for pipelines), but nothing is learned."""
+        return self  
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
-         X = X.copy()
-         X[self.variables]=X[self.variables].fillna(self.fill_value)
+        """Replace missing values in 'weekday' using 'dteday'."""
+        result = X.copy()
+        
+        # Convert 'dteday' to weekday abbreviation if missing in 'weekday'
+        result[self.col1] = result.apply(
+            lambda row: row[self.col1] if pd.notna(row[self.col1]) else row[self.col2].strftime('%A')[:3],
+            axis=1
+        )
 
-         return X
-
-
+        return result
 
 class WeathersitImputer(BaseEstimator, TransformerMixin):
     """ Impute missing values in 'weathersit' column by replacing them with the most frequent category value """
     def __init__(self, variables: str):
 
          if not isinstance(variables, str):
-             raise ValueError("variables should be a str")
+             raise ValueError("variables should be a list")
 
          self.variables = variables
 
@@ -58,9 +60,9 @@ class Mapper(BaseEstimator, TransformerMixin):
 
     def __init__(self, variables: str, mappings: dict):
         if not isinstance(variables, str):
-            raise ValueError("variables should be a string")
+            raise ValueError("variables should be a str")
 
-        self.variables = str(variables)
+        self.variables = variables
         self.mappings = mappings
 
     def fit(self, X: pd.DataFrame, y: pd.Series = None):
@@ -69,30 +71,30 @@ class Mapper(BaseEstimator, TransformerMixin):
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
         X = X.copy()
 
-        # Check if self.variables is a column in X
-        if self.variables not in X.columns:
-            raise ValueError(f"{self.variables} is not a column in X")
+    # Convert to lowercase for case-insensitive matching
+        X[self.variables] = X[self.variables].astype(str).str.lower()
+        mapping_lower = {str(k).lower(): v for k, v in self.mappings.items()}
 
-        # Debug: Print unique values before mapping
+    # Debug: Print unique values before mapping
         print(f"Before Mapping ({self.variables}):", X[self.variables].unique())
+        print(f"Mapping Dictionary: {mapping_lower}")
 
-        # Apply mapping (without unnecessary conversions)
-        X[self.variables] = X[self.variables].map(self.mappings)
+    # Apply mapping
+        X[self.variables] = X[self.variables].map(mapping_lower)
 
-        # Debug: Check unmapped values
+    # Debug: Check unmapped values
         missing_values = X[self.variables].isnull().sum()
         if missing_values > 0:
             print(f"⚠️ Warning: {missing_values} unmapped values found in '{self.variables}':")
-            print(X[X[self.variables].isnull()][self.variables].unique())  # Print unmapped values
+            print(X[X[self.variables].isnull()][self.variables].unique())
 
-        # Replace NaN before converting to int
+    # Replace NaN before converting to int
         X[self.variables] = X[self.variables].fillna(-1).astype(int)
 
-        # Debug: Print unique values after mapping
+    # Debug: Print unique values after mapping
         print(f"After Mapping ({self.variables}):", X[self.variables].unique())
 
         return X
-
 
 
 class OutlierHandler(BaseEstimator, TransformerMixin):
