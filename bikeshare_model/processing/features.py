@@ -76,8 +76,8 @@ class Mapper(BaseEstimator, TransformerMixin):
         mapping_lower = {str(k).lower(): v for k, v in self.mappings.items()}
 
     # Debug: Print unique values before mapping
-        print(f"Before Mapping ({self.variables}):", X[self.variables].unique())
-        print(f"Mapping Dictionary: {mapping_lower}")
+        #print(f"Before Mapping ({self.variables}):", X[self.variables].unique())
+        #print(f"Mapping Dictionary: {mapping_lower}")
 
     # Apply mapping
         X[self.variables] = X[self.variables].map(mapping_lower)
@@ -92,7 +92,7 @@ class Mapper(BaseEstimator, TransformerMixin):
         X[self.variables] = X[self.variables].fillna(-1).astype(int)
 
     # Debug: Print unique values after mapping
-        print(f"After Mapping ({self.variables}):", X[self.variables].unique())
+        #print(f"After Mapping ({self.variables}):", X[self.variables].unique())
 
         return X
 

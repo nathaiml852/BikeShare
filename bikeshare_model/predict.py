@@ -16,48 +16,45 @@ from bikeshare_model.processing.validation import validate_inputs
 
 # Load the saved pipeline
 pipeline_file_name = f"{config.app_config_.pipeline_save_file}{_version}.pkl"
+print(f"🔍 Loading pipeline from: {pipeline_file_name}")  # ✅ Debug pipeline path
 bikeshare_pipe = load_pipeline(file_name=pipeline_file_name)
+
 if bikeshare_pipe is None:
-    print("🚨 Error: Model pipeline failed to load!")
+    raise RuntimeError("🚨 Error: Model pipeline failed to load!")
 
-def make_prediction(*, input_data: Union[pd.DataFrame, dict]) -> dict:
-    """Make a prediction using the saved model."""
-    
-    # Convert input to DataFrame
-    validated_data, errors = validate_inputs(input_df=pd.DataFrame(input_data))
+def make_prediction(input_data):
+    df = pd.DataFrame(input_data)
 
-    print(f"Validated Data:\n{validated_data}\n")  # 🟢 Debugging line
+    # ✅ Validate inputs
+    validated_data, errors = validate_inputs(input_df=df)
 
-    # Ensure all required features exist in DataFrame
-    validated_data = validated_data.reindex(columns=config.model_config_.features, fill_value=0)
-
-    print(f"Data After Reindexing:\n{validated_data}\n")  # 🟢 Debugging line
-    print(f"Errors: {errors}")  # 🟢 Debugging line# Convert input to DataFrame
-    
-    # Return errors if validation failed
     if errors:
-        return {"predictions": None, "version": _version, "errors": errors}
+        return {"predictions": None, "errors": errors}
 
-    # Make predictions
-    predictions = bikeshare_pipe.predict(validated_data)
-    return {"predictions": predictions, "version": _version, "errors": errors}
+    try:
+        predictions = bikeshare_pipe.predict(validated_data)
+        return {"predictions": predictions.tolist(), "errors": None}
+    except Exception as e:
+        return {"predictions": None, "errors": str(e)}
+
+
 
 if __name__ == "__main__":
     data_in = {
-    'dteday': ["2012-11-05"],  # 🟢 ADD MISSING FIELD
-    'season': ["Fall"],
-    'hr': ["6am"],
+    'dteday': ["2012-02-09"],  # 🟢 ADD MISSING FIELD
+    'season': ["spring"],
+    'hr': ["11am"],
     'holiday': ['No'],
-    'weekday': ["Mon"],
+    'weekday': ["Thu"],
     'workingday': ["Yes"],
-    'weathersit': ['Mist'],
-    'temp': [6.10],
-    'atemp': [3.0014],
-    'hum': [49.0],
+    'weathersit': ['Clear'],
+    'temp': [3.28],
+    'atemp': [-1],
+    'hum': [55.0],
     'windspeed': [19.0012],
-    'registered': [135],
+    'registered': [95],
     'yr': [2012],
-    'mnth': ["November"]
+    'mnth': ["February"]
 }
     input_data = pd.DataFrame(data_in)
     print(f"Raw Input Data:\n{pd.DataFrame(input_data)}\n")  # 🟢 Debugging line

@@ -18,7 +18,7 @@ def run_training() -> None:
     try:
         # Read training data
         data = load_dataset(file_name=config.app_config_.training_data_file)
-        print(f"Loaded data with shape: {data.shape}")
+        #print(f"Loaded data with shape: {data.shape}")
         
         # Check for missing expected columns
         expected_columns = config.model_config_.features + [config.model_config_.target]
